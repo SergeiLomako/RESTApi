@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\User;
+use Closure;
+
+class CheckUser
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        $token = $request->header('Authorization');
+        $user = User::findByToken($token);
+
+        if(!$user){
+            return response()->json('Access Denied!');
+        }
+
+        return $next($request);
+    }
+}
